@@ -5,7 +5,7 @@ import { Sequelize } from 'sequelize';
 const getActionListByChainId = async (req, res) => {
     try {
         const result = await db.query(`
-            SELECT action_id, action_name, action_url, action_type, action_weight
+            SELECT action_id, action_name, action_url, action_type, action_weight, active
             FROM action_list
             WHERE chain_id = ${req.params.id};
         `, { type: Sequelize.QueryTypes.SELECT });
@@ -17,7 +17,7 @@ const getActionListByChainId = async (req, res) => {
 const getChainList = async (req, res) => {
     try {
         const result = await db.query(`
-            SELECT chain_id, chain_name
+            SELECT chain_id, chain_name, chain_active
             FROM chain_list;
         `, { type: Sequelize.QueryTypes.SELECT });
         res.json(result);
@@ -73,6 +73,17 @@ const addActionItem = async (req, res) => {
         res.json({ message: "Create success" });
     }
 }
+const addChainItem = async (req, res) => {
+    try {
+        const result = await db.query(`
+            INSERT INTO chain_list (chain_name)
+            VALUES ('${req.body.chain_name}');
+        `, { type: Sequelize.QueryTypes.SELECT });
+        res.json(result);
+    } catch (error) {
+        res.json({ message: "Create success" });
+    }
+}
 const updateActionItem = async (req, res) => {
     try {
         const result = await db.query(`
@@ -85,11 +96,34 @@ const updateActionItem = async (req, res) => {
         res.json({ message: "Update success" });
     }
 }
+const setActiveAction = async (req, res) => {
+    try {
+        const result = await db.query(`
+        UPDATE action_list
+        SET active = ${req.body.isActive}
+        WHERE action_id = ${req.body.action_id};
+        `, { type: Sequelize.QueryTypes.SELECT });
+        res.json(result);
+    } catch (error) {
+        res.json({ message: "Update success" });
+    }
+}
+const setActiveChain = async (req, res) => {
+    try {
+        const result = await db.query(`
+        UPDATE chain_list
+        SET chain_active = ${req.body.isActive}
+        WHERE chain_id = ${req.body.chain_id};
+        `, { type: Sequelize.QueryTypes.SELECT });
+        res.json(result);
+    } catch (error) {
+        res.json({ message: "Update success" });
+    }
+}
 const deleteSelectedItem = async (req, res) => {
     try {
         const data = req.params.id.split(',')
         const ids = data.map(Number)
-        console.log(ids);
         const result = await db.query(`
             DELETE FROM action_list
             WHERE action_id IN (${ids});
@@ -99,4 +133,15 @@ const deleteSelectedItem = async (req, res) => {
         res.json({ message: "Delete success" })
     }
 }
-export { addActionItem, getActionById, getBridgeList, updateActionItem, deleteSelectedItem, getActionListByChainId, getChainList, getScriptList }
+const deleteChain = async (req, res) => {
+    try {
+        const result = await db.query(`
+            DELETE FROM chain_list
+            WHERE chain_id IN (${req.params.id});
+        `, { type: Sequelize.QueryTypes.SELECT });
+        res.json(result);
+    } catch (error) {
+        res.json({ message: "Delete success" })
+    }
+}
+export { addActionItem, addChainItem, getActionById, getBridgeList, updateActionItem, setActiveAction, setActiveChain, deleteSelectedItem, deleteChain, getActionListByChainId, getChainList, getScriptList }
