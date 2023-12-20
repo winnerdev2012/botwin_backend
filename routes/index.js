@@ -9,7 +9,9 @@ import {
     updateActiveAction,
     updateActiveChain,
     updateMaxActionCount,
+    updateMaxChainCount,
     updateBridge,
+    updateChain,
     
     getActionById,
     getScriptList,
@@ -44,9 +46,11 @@ router.post('/add_bridge_join', addBridgeJoin)
 
 router.patch('/update_action_item/:id', updateActionItem)
 router.patch('/update_Bridge', updateBridge)
-router.patch('/set_avtive_action', updateActiveAction)
-router.patch('/set_avtive_chain', updateActiveChain)
-router.patch('/set_max_action_count', updateMaxActionCount)
+router.patch('/update_chain_item', updateChain)
+router.patch('/update_active_action', updateActiveAction)
+router.patch('/update_active_chain', updateActiveChain)
+router.patch('/update_max_action_count', updateMaxActionCount)
+router.patch('/update_max_chain_count', updateMaxChainCount)
 
 router.delete('/delete_selected_item/:id', deleteSelectedItem)
 router.delete('/delete_chain/:id', deleteChain)

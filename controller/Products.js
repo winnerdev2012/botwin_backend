@@ -17,7 +17,7 @@ const getActionListByChainId = async (req, res) => {
 const getChainList = async (req, res) => {
     try {
         const result = await db.query(`
-            SELECT chain_id, chain_name, chain_active, max_action_count
+            SELECT chain_id, chain_name, chain_active, max_action_count, max_chain_count
             FROM chain_list;
         `, { type: Sequelize.QueryTypes.SELECT });
         res.json(result);
@@ -136,8 +136,8 @@ const addBridgeItem = async (req, res) => {
 const addChainItem = async (req, res) => {
     try {
         const result = await db.query(`
-            INSERT INTO chain_list (chain_name)
-            VALUES ('${req.body.chain_name}');
+            INSERT INTO chain_list (chain_name, chain_active, max_action_count, max_chain_count )
+            VALUES ('${req.body.chain_name}', "1 1 1 1", "1 1 1 1", "1 1 1 1");
         `, { type: Sequelize.QueryTypes.SELECT });
         res.json(result);
     } catch (error) {
@@ -195,6 +195,19 @@ const updateBridge = async (req, res) => {
     }
 }
 
+const updateChain = async (req, res) => {
+    try {
+        const result = await db.query(`
+        UPDATE chain_list
+        SET chain_name = '${req.body.chain_name}'
+        WHERE chain_id = ${req.body.chain_id};
+        `, { type: Sequelize.QueryTypes.SELECT });
+        res.json(result);
+    } catch (error) {
+        res.json({ message: "Update success" });
+    }
+}
+
 const updateActiveChain = async (req, res) => {
     try {
         const result = await db.query(`
@@ -213,6 +226,19 @@ const updateMaxActionCount = async (req, res) => {
         const result = await db.query(`
         UPDATE chain_list
         SET max_action_count = '${req.body.max_action_count}'
+        WHERE chain_id = ${req.body.chain_id};
+        `, { type: Sequelize.QueryTypes.SELECT });
+        res.json(result);
+    } catch (error) {
+        res.json({ message: "Update success" });
+    }
+}
+
+const updateMaxChainCount = async (req, res) => {
+    try {
+        const result = await db.query(`
+        UPDATE chain_list
+        SET max_chain_count = '${req.body.max_chain_count}'
         WHERE chain_id = ${req.body.chain_id};
         `, { type: Sequelize.QueryTypes.SELECT });
         res.json(result);
@@ -287,9 +313,11 @@ export {
 
     updateActionItem,
     updateMaxActionCount,
+    updateMaxChainCount,
     updateActiveAction,
     updateActiveChain,
     updateBridge,
+    updateChain,
 
     deleteSelectedItem,
     deleteChain,
